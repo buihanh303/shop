@@ -1,21 +1,21 @@
 import React from 'react'
 import * as S from './ratingStars.style'
 import PropTypes from 'prop-types'
-// import { useNavigate } from 'react-router-dom'
-// import { path } from 'src/constants/path'
-// import qs from 'query-string'
-// import classNames from 'classnames'
+import { useNavigate } from 'react-router-dom'
+import { path } from 'src/constants/path'
+import qs from 'query-string'
+import classNames from 'classnames'
+
 export default function RatingStars({ filters }) {
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
-  // const searchRating = rating => {
-  //   const _filters = {
-  //     ...filters,
-  //     rating
-  //   }
-  //   navigate(path.home + `?${qs.stringify(_filters)}`)
-  // }
-
+  const searchRating = rating => {
+    const _filters = {
+      ...filters,
+      rating
+    }
+    navigate(path.home + `?${qs.stringify(_filters)}`)
+  }
   return (
     <div>
       {Array(5)
@@ -23,10 +23,10 @@ export default function RatingStars({ filters }) {
         .map((item, index) => (
           <S.RatingStarsContainer
             key={index}
-            // onClick={() => searchRating(5 - index)}
-            // className={classNames({
-            //   active: Number(filters.rating) === 5 - index
-            // })}
+            onClick={() => searchRating(5 - index)}
+            className={classNames({
+              active: Number(filters.rating) === 5 - index
+            })}
           >
             {Array(5)
               .fill(0)

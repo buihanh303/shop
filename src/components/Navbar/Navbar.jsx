@@ -4,7 +4,6 @@ import { path } from 'src/constants/path'
 import { useAuthenticated } from 'src/hooks/useAuthenticated'
 import usePopover from 'src/hooks/usePopover'
 import { logout } from 'src/pages/Auth/auth.slice'
-// import { logout } from 'src/pages/Auth/auth.slice'
 import Popover from '../Popover/Popover'
 import * as S from './navbar.style'
 

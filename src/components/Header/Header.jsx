@@ -1,25 +1,22 @@
-import React, { useState } from 'react'
-// import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { path } from 'src/constants/path'
 import usePopover from 'src/hooks/usePopover'
-// import useQuery from 'src/hooks/useQuery'
-// import { formatMoney } from 'src/utils/helper'
 import Navbar from '../Navbar/Navbar'
 import Popover from '../Popover/Popover'
+import useQuery from 'src/hooks/useQuery'
 import * as S from './header.style'
 
 export default function Header() {
   const { activePopover, hidePopover, showPopover } = usePopover()
   const [searchValue, setSearchValue] = useState('')
   const navigate = useNavigate()
-  // const query = useQuery()
-  // const purchases = useSelector(state => state.cart.purchases)
+  const query = useQuery()
 
-  // useEffect(() => {
-  //   const { name = '' } = query
-  //   setSearchValue(name)
-  // }, [query])
+  useEffect(() => {
+    const { name = '' } = query
+    setSearchValue(name)
+  }, [query])
 
   const onChangeSearch = event => {
     setSearchValue(event.target.value)
@@ -94,17 +91,8 @@ export default function Header() {
               <Popover active={activePopover}>
                 <S.PopoverContent>
                   <S.PopoverTitle>Sản phẩm mới thêm</S.PopoverTitle>
-                  {/* {purchases.slice(0, 5).map(purchase => (
-                    <S.MiniProductCart key={purchase._id}>
-                      <S.MiniProductCartImg src={purchase.product.image} />
-                      <S.MiniProductCartTitle>{purchase.product.name}</S.MiniProductCartTitle>
-                      <S.MiniProductCartPrice>đ{formatMoney(purchase.product.price)}</S.MiniProductCartPrice>
-                    </S.MiniProductCart>
-                  ))} */}
-
                   <S.PopoverFooter>
                     <S.MoreProduct>
-                      {/* {purchases.length > 5 && <span>{purchases.length - 5} sản phẩm vào giỏ</span>} */}
                       <span>5</span>
                     </S.MoreProduct>
                     <S.ButtonShowCart to="">Xem giỏ hàng</S.ButtonShowCart>

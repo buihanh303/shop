@@ -1,13 +1,76 @@
 import React from 'react'
 import { path } from 'src/constants/path'
-import { Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import RatingStars from '../RatingStars/RatingStars'
 import * as S from './filterPanel.style'
 import PropTypes from 'prop-types'
-// import qs from 'query-string'
-// import { Controller, useForm } from 'react-hook-form'
-// import { useEffect } from 'react'
+import qs from 'query-string'
+import { Controller, useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 export default function FilterPanel({ categories, filters }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+    clearErrors,
+    reset,
+    setValue
+  } = useForm({
+    defaultValues: {
+      minPrice: filters.minPrice || '',
+      maxPrice: filters.maxPrice || ''
+    },
+    reValidateMode: 'onSubmit'
+  })
+
+  useEffect(() => {
+    setValue('minPrice', filters.minPrice || '')
+    setValue('maxPrice', filters.maxPrice || '')
+  }, [setValue, filters])
+
+  const validPrice = () => {
+    const minPrice = getValues('minPrice')
+    const maxPrice = getValues('maxPrice')
+    const message = 'Vui lòng điền khoảng giá phù hợp'
+    if (minPrice !== '' && maxPrice !== '') {
+      return Number(maxPrice) >= Number(minPrice) || message
+    }
+    return minPrice !== '' || maxPrice !== '' || message
+  }
+
+  const handleActiveClassCategoryItem = category => {
+    const query = qs.parse(location.search)
+    return query.category === category._id ? 'active' : ''
+  }
+
+  const searchPrice = data => {
+    const { minPrice, maxPrice } = data
+    if (minPrice !== '' || maxPrice !== '') {
+      let _filters = filters
+      if (minPrice !== '') {
+        _filters = { ..._filters, minPrice }
+      } else {
+        delete _filters.minPrice
+      }
+      if (maxPrice !== '') {
+        _filters = { ..._filters, maxPrice }
+      } else {
+        delete _filters.maxPrice
+      }
+      navigate(path.home + `?${qs.stringify(_filters)}`)
+    }
+  }
+
+  const clearAll = () => {
+    reset()
+    navigate({
+      pathname: path.home
+    })
+  }
   return (
     <div>
       <S.CategoryTitleLink to={path.home}>
@@ -27,18 +90,13 @@ export default function FilterPanel({ categories, filters }) {
         Tất cả danh mục
       </S.CategoryTitleLink>
       <S.CategoryList>
-        {/* {categories.map(category => (
+        {categories.map(category => (
           <S.CategoryItem key={category._id}>
             <Link to={path.home + `?category=${category._id}`} className={handleActiveClassCategoryItem(category)}>
               {category.name}
             </Link>
           </S.CategoryItem>
-        ))} */}
-        <S.CategoryItem>
-          <Link to="">Quần áo</Link>
-          <Link to="">Quần áo</Link>
-          <Link to="">Quần áo</Link>
-        </S.CategoryItem>
+        ))}
       </S.CategoryList>
       <S.CategoryTitle>
         <svg enableBackground="new 0 0 15 15" viewBox="0 0 15 15" x={0} y={0} className="shopee-svg-icon ">
@@ -58,9 +116,7 @@ export default function FilterPanel({ categories, filters }) {
         <S.FilterGroupHeader>Khoản giá</S.FilterGroupHeader>
         <S.PriceRange>
           <S.PriceRangeGroup>
-            <S.PriceRangeInput placeholder="Từ"></S.PriceRangeInput>
-            <S.PriceRangeInput placeholder="Đến"></S.PriceRangeInput>
-            {/* <Controller
+            <Controller
               name="minPrice"
               control={control}
               rules={{
@@ -94,21 +150,19 @@ export default function FilterPanel({ categories, filters }) {
                   value={getValues('maxPrice')}
                 />
               )}
-            /> */}
+            />
           </S.PriceRangeGroup>
-          {/* {Object.values(errors).length !== 0 && (
+          {Object.values(errors).length !== 0 && (
             <S.PriceErrorMessage>Vui lòng điền khoảng giá phù hợp</S.PriceErrorMessage>
-          )} */}
-          {/* <S.PriceErrorMessage>Vui lòng điền khoảng giá phù hợp</S.PriceErrorMessage> */}
-
-          <S.PriceRangeButton>Áp dụng</S.PriceRangeButton>
+          )}
+          <S.PriceRangeButton onClick={handleSubmit(searchPrice)}>Áp dụng</S.PriceRangeButton>
         </S.PriceRange>
       </S.FilterGroup>
       <S.FilterGroup>
         <S.FilterGroupHeader>Đánh giá</S.FilterGroupHeader>
-        <RatingStars />
+        <RatingStars filters={filters} />
       </S.FilterGroup>
-      <S.RemoveFilterButton>Xóa tất cả</S.RemoveFilterButton>
+      <S.RemoveFilterButton onClick={clearAll}>Xóa tất cả</S.RemoveFilterButton>
     </div>
   )
 }
