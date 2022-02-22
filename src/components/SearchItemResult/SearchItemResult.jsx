@@ -2,7 +2,7 @@ import React from 'react'
 import ProductItem from '../ProductItem/ProductItem'
 import * as S from './searchItemResult.style'
 import PropTypes from 'prop-types'
-// import Pagination from '../Pagination/Pagination'
+import Pagination from '../Pagination/Pagination'
 import { useNavigate } from 'react-router-dom'
 import { path } from 'src/constants/path'
 import qs from 'query-string'
@@ -99,7 +99,7 @@ export default function SearchItemResult({ products, filters }) {
           ))}
         </S.ProductList>
       )}
-      {/* <Pagination pagination={pagination} filters={filters}></Pagination> */}
+      <Pagination pagination={pagination} filters={filters}></Pagination>
     </div>
   )
 }
